@@ -183,7 +183,7 @@ namespace ConsoleApp4
         public override string  ToString()
         {
             return $"----------------------------------------------------------------------------\n" +
-                $"Id: {this.Id}\nNonce: {this.Nonce}\nTimestamp: {this.TimeStamp}\nData: {this.Data}\nHash: {this.Hash}\nPrevious Hash: {this.PreviousHash}\n" +
+                $"Id: {this.Id}\nNonce: {this.Nonce}\nTimestamp: {this.TimeStamp}\nData: {this.Data}\nPrevious Hash: {this.PreviousHash}\nHash: {this.Hash}\n" +
                 $"----------------------------------------------------------------------------\n";
         }
 
