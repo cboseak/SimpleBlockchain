@@ -11,7 +11,13 @@ namespace ConsoleApp4
     {
         static void Main(string[] args)
         {
-            var blockchain = new Blockchain();
+            //create a blockchain with a difficulty of 4
+            var blockchain = new Blockchain(4);
+
+            //loop and ask user to insert blocks
+            LoopAndAskForBlockData(ref blockchain);
+        }
+        static void LoopAndAskForBlockData(ref Blockchain blockchain) {
             var ret = "";
             do
             {
@@ -41,13 +47,20 @@ namespace ConsoleApp4
     {
 
         List<Block> blocks = new List<Block>();
-        public int difficulty { get; set; } = 4;
+        public int Difficulty { get; set; }
+
+        //if no difficulty is specified, default is 4
         public Blockchain()
         {
+            this.Difficulty = 4;
             AddGenesisBlock();
         }
-
-        //abaility to seed the block chain with data
+        public Blockchain(int difficulty)
+        {
+            this.Difficulty = difficulty;
+            AddGenesisBlock();
+        }
+        //ability to seed the block chain with data
         public Blockchain(IEnumerable<string> data)
         {
             AddGenesisBlock();
@@ -59,6 +72,8 @@ namespace ConsoleApp4
                 Console.WriteLine($"Block Mined!\n{block.ToString()}");
             }
         }
+
+        //loop through and try all ints as Nonce value until appropriate hash is found
          public void MineBlock(Block block)
         {
             for (var i = 0; i < int.MaxValue; i++)
@@ -71,8 +86,11 @@ namespace ConsoleApp4
                 }
             }
         }
+
+        //add first block upon blockchain object init
         private void AddGenesisBlock() {
-            var genesis = new Block(0, "GENESIS BLOCK", "0");
+            var genesis = new Block(0, "GENESIS BLOCK", "0", Difficulty);
+            Console.WriteLine("Mining Gensis Block....");
             for (var i = 0; i < int.MaxValue; i++)
             {
                 if (genesis.IsValidNonce(i))
@@ -84,11 +102,14 @@ namespace ConsoleApp4
             }
         }
 
+        //create a new block where 
         public Block NewBlock(string data)
         {
-            var block = new Block(blocks.Last().Id + 1, data, blocks.Last().Hash);
+            var block = new Block(blocks.Last().Id + 1, data, blocks.Last().Hash, Difficulty);
             return block;
         }
+
+        //print out all blocks
         public string PrintBlockChain()
         {
             StringBuilder Sb = new StringBuilder();
@@ -98,26 +119,31 @@ namespace ConsoleApp4
             }
             return Sb.ToString();
         }
+
+        //add to blockchain
         public void AddBlockToChain(Block block)
         {
             VerifyChain(blocks);
-            if (block.PreviousHash == blocks.Last().Hash && block.Hash.Substring(0, difficulty) == ("").PadLeft(difficulty, '0') && block.ValidateNonce())
+            if (block.PreviousHash == blocks.Last().Hash && block.Hash.Substring(0, Difficulty) == ("").PadLeft(Difficulty, '0') && block.ValidateNonce())
             {
                 blocks.Add(block);
             }
         }
 
+        //verify chain as called by our other method, with dependancy injection
         private bool VerifyChain(List<Block> blocks)
         {
             for (var i = 0; i < blocks.Count(); i++)
             {
-                if (i - 1 >= 0 && blocks.ElementAt(i).PreviousHash != blocks.ElementAt(i - 1).Hash)
+                if (i - 1 >= 0 && (blocks.ElementAt(i).PreviousHash != blocks.ElementAt(i - 1).Hash || blocks[i].Id != i))
                 {
                     return false;
                 }
             }
             return true;
         }
+
+        //verify chain public facing method
         public bool VerifyChain()
         {
             return VerifyChain(this.blocks);
@@ -134,21 +160,22 @@ namespace ConsoleApp4
         public string Hash { get; set; }
         int Nonce { get; set; }
 
-        public int difficulty { get; set; } = 4;
+        public int Difficulty { get; set; } = 4;
 
-
+        //validate nonce that already exists in the object
         public bool ValidateNonce()
         {
             return IsValidNonce(this.Nonce);
         }
 
-
-        public Block(int id, string data, string previousHash)
+        
+        public Block(int id, string data, string previousHash,int difficulty)
         {
             TimeStamp = DateTime.Now.ToString("MM/dd/yy H:mm:ss zzz");
-            Id = id;
-            Data = data;
-            PreviousHash = previousHash;
+            this.Id = id;
+            this.Data = data;
+            this.PreviousHash = previousHash;
+            this.Difficulty = difficulty;
 
         }
 
@@ -159,14 +186,21 @@ namespace ConsoleApp4
                 $"Id: {this.Id}\nNonce: {this.Nonce}\nTimestamp: {this.TimeStamp}\nData: {this.Data}\nHash: {this.Hash}\nPrevious Hash: {this.PreviousHash}\n" +
                 $"----------------------------------------------------------------------------\n";
         }
+
+        //check hash for appropriate leading zeroes
         private string ReturnLeadingZeroes(int zeroes)
         {
             return ("").PadLeft(zeroes, '0');
         }
+
+        //check if a given int would be valid as the blocks nonce
         public bool IsValidNonce(int nonce)
         {
-            return GetHash(nonce).Substring(0, difficulty) == ReturnLeadingZeroes(difficulty);
+            return GetHash(nonce).Substring(0, Difficulty) == ReturnLeadingZeroes(Difficulty);
         }
+
+
+        //given a nonce, return complete block.
         public Block GetBlockWithNonce(int nonce)
         {
             if (IsValidNonce(nonce))
@@ -177,6 +211,7 @@ namespace ConsoleApp4
             return this;
         }
 
+        //SHA256 HASH OF BLOCK
         public string GetHash(int nonce)
         {
             StringBuilder Sb = new StringBuilder();

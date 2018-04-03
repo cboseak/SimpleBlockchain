@@ -5,3 +5,10 @@ c:\users\chris\Source\Repos\ConsoleApp4\ConsoleApp4\obj\Debug\ConsoleApp4.csproj
 c:\users\chris\Source\Repos\ConsoleApp4\ConsoleApp4\obj\Debug\ConsoleApp4.csproj.CoreCompileInputs.cache
 c:\users\chris\Source\Repos\ConsoleApp4\ConsoleApp4\obj\Debug\ConsoleApp4.exe
 c:\users\chris\Source\Repos\ConsoleApp4\ConsoleApp4\obj\Debug\ConsoleApp4.pdb
+D:\github\SimpleBlockchain\ConsoleApp4\bin\Debug\ConsoleApp4.exe.config
+D:\github\SimpleBlockchain\ConsoleApp4\bin\Debug\ConsoleApp4.exe
+D:\github\SimpleBlockchain\ConsoleApp4\bin\Debug\ConsoleApp4.pdb
+D:\github\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.csprojResolveAssemblyReference.cache
+D:\github\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.csproj.CoreCompileInputs.cache
+D:\github\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.exe
+D:\github\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.pdb
