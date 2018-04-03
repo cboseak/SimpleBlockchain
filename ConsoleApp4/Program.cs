@@ -181,9 +181,10 @@ namespace ConsoleApp4
         {
             StringBuilder Sb = new StringBuilder();
             StringBuilder hashPrep = new StringBuilder();
-            hashPrep.Append(Id);
-            hashPrep.Append(Data);
-            hashPrep.Append(PreviousHash);
+            hashPrep.Append(this.Id);
+            hashPrep.Append(this.TimeStamp);
+            hashPrep.Append(this.Data);
+            hashPrep.Append(this.PreviousHash);
             hashPrep.Append(nonce);
             using (SHA256 hash = SHA256Managed.Create())
             {
