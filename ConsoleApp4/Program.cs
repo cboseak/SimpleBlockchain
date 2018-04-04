@@ -114,11 +114,13 @@ namespace ConsoleApp4
         //loop through and try all ints as Nonce value until appropriate hash is found
         public void MineBlock(Block block)
         {
+            var r = new Random();
             for (var i = 0; i < int.MaxValue; i++)
             {
-                if (block.IsValidNonce(i))
+                var rnd = r.Next(1, int.MaxValue);
+                if (block.IsValidNonce(rnd))
                 {
-                    block = block.GetBlockWithNonce(i);
+                    block = block.GetBlockWithNonce(rnd);
                     this.AddBlockToChain(block);
                     break;
                 }
