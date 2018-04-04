@@ -12,7 +12,7 @@ namespace ConsoleApp4
         static void Main(string[] args)
         {
             //create a blockchain with a difficulty of 4
-            var blockchain = new Blockchain(4);
+            var blockchain = new Blockchain(4,Algorithm.sha512);
 
             //loop and ask user to insert blocks
             LoopAndAskForBlockData(ref blockchain);
@@ -43,26 +43,38 @@ namespace ConsoleApp4
         }
      
     }
+    enum Algorithm { sha256 = 1, sha512 = 2 };
     class Blockchain
     {
-
+    
+        
         List<Block> blocks = new List<Block>();
         public int Difficulty { get; set; }
-
+        private Algorithm algo { get; set; }
         //if no difficulty is specified, default is 4
         public Blockchain()
         {
+            this.algo = Algorithm.sha256;
             this.Difficulty = 4;
             AddGenesisBlock();
         }
         public Blockchain(int difficulty)
         {
+            this.algo = Algorithm.sha256;
+            this.Difficulty = difficulty;
+            AddGenesisBlock();
+        }
+        public Blockchain(int difficulty,Algorithm algo)
+        {
+            this.algo = algo;
             this.Difficulty = difficulty;
             AddGenesisBlock();
         }
         //ability to seed the block chain with data
         public Blockchain(IEnumerable<string> data)
         {
+            this.algo = Algorithm.sha256;
+            this.Difficulty = 4;
             AddGenesisBlock();
             foreach(var d in data)
             {
@@ -72,9 +84,35 @@ namespace ConsoleApp4
                 Console.WriteLine($"Block Mined!\n{block.ToString()}");
             }
         }
+        public Blockchain(IEnumerable<string> data,  Algorithm algo)
+        {
+            this.algo = algo;
+            this.Difficulty = 4;
+            AddGenesisBlock();
+            foreach (var d in data)
+            {
+                var block = this.NewBlock(d);
+                Console.WriteLine("Mining.....");
+                MineBlock(block);
+                Console.WriteLine($"Block Mined!\n{block.ToString()}");
+            }
+        }
+        public Blockchain(IEnumerable<string> data, int difficulty, Algorithm algo)
+        {
+            this.algo = Algorithm.sha256;
+            this.Difficulty = difficulty;
+            AddGenesisBlock();
+            foreach (var d in data)
+            {
+                var block = this.NewBlock(d);
+                Console.WriteLine("Mining.....");
+                MineBlock(block);
+                Console.WriteLine($"Block Mined!\n{block.ToString()}");
+            }
+        }
 
         //loop through and try all ints as Nonce value until appropriate hash is found
-         public void MineBlock(Block block)
+        public void MineBlock(Block block)
         {
             for (var i = 0; i < int.MaxValue; i++)
             {
@@ -89,7 +127,7 @@ namespace ConsoleApp4
 
         //add first block upon blockchain object init
         private void AddGenesisBlock() {
-            var genesis = new Block(0, "GENESIS BLOCK", "0", Difficulty);
+            var genesis = new Block(0, "GENESIS BLOCK", "0", Difficulty,this.algo);
             Console.WriteLine("Mining Gensis Block....");
             for (var i = 0; i < int.MaxValue; i++)
             {
@@ -105,7 +143,7 @@ namespace ConsoleApp4
         //create a new block where 
         public Block NewBlock(string data)
         {
-            var block = new Block(blocks.Last().Id + 1, data, blocks.Last().Hash, Difficulty);
+            var block = new Block(blocks.Last().Id + 1, data, blocks.Last().Hash, Difficulty, this.algo);
             return block;
         }
 
@@ -159,7 +197,7 @@ namespace ConsoleApp4
         public string TimeStamp { get; set; }
         public string Hash { get; set; }
         int Nonce { get; set; }
-
+        private Algorithm Algo { get; set; }
         public int Difficulty { get; set; } = 4;
 
         //validate nonce that already exists in the object
@@ -169,13 +207,14 @@ namespace ConsoleApp4
         }
 
         
-        public Block(int id, string data, string previousHash,int difficulty)
+        public Block(int id, string data, string previousHash,int difficulty,Algorithm algo)
         {
             TimeStamp = DateTime.Now.ToString("MM/dd/yy H:mm:ss zzz");
             this.Id = id;
             this.Data = data;
             this.PreviousHash = previousHash;
             this.Difficulty = difficulty;
+            this.Algo = algo;
 
         }
 
@@ -196,7 +235,7 @@ namespace ConsoleApp4
         //check if a given int would be valid as the blocks nonce
         public bool IsValidNonce(int nonce)
         {
-            return GetHash(nonce).Substring(0, Difficulty) == ReturnLeadingZeroes(Difficulty);
+            return GetSHA256Hash(nonce).Substring(0, Difficulty) == ReturnLeadingZeroes(Difficulty);
         }
 
 
@@ -206,13 +245,13 @@ namespace ConsoleApp4
             if (IsValidNonce(nonce))
             {
                 Nonce = nonce;
-                Hash = GetHash(nonce);
+                Hash = GetSHA256Hash(nonce);
             }
             return this;
         }
 
         //SHA256 HASH OF BLOCK
-        public string GetHash(int nonce)
+        public string GetSHA256Hash(int nonce)
         {
             StringBuilder Sb = new StringBuilder();
             StringBuilder hashPrep = new StringBuilder();
@@ -230,6 +269,25 @@ namespace ConsoleApp4
                     Sb.Append(b.ToString("x2"));
             }
             return Sb.ToString();
+        }
+        private static string GetSHA512Hash(string String)
+        {
+
+            UnicodeEncoding ue = new UnicodeEncoding();
+            byte[] hashValue;
+            byte[] message = ue.GetBytes(String);
+
+            SHA512Managed hashString = new SHA512Managed();
+            string hex = "";
+
+            hashValue = hashString.ComputeHash(message);
+
+            foreach (byte x in hashValue)
+            {
+                hex += String.Format("{0:x2}", x);
+            }
+
+            return hex;
         }
 
     }
