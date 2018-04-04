@@ -12,7 +12,7 @@ namespace ConsoleApp4
         static void Main(string[] args)
         {
             //create a blockchain with a difficulty of 4
-            var blockchain = new Blockchain(4,Algorithm.sha512);
+            var blockchain = new Blockchain(4,Algorithm.sha256);
 
             //loop and ask user to insert blocks
             LoopAndAskForBlockData(ref blockchain);
@@ -235,7 +235,7 @@ namespace ConsoleApp4
         //check if a given int would be valid as the blocks nonce
         public bool IsValidNonce(int nonce)
         {
-            return GetSHA256Hash(nonce).Substring(0, Difficulty) == ReturnLeadingZeroes(Difficulty);
+            return GetHash(nonce).Substring(0, Difficulty) == ReturnLeadingZeroes(Difficulty);
         }
 
 
@@ -245,37 +245,46 @@ namespace ConsoleApp4
             if (IsValidNonce(nonce))
             {
                 Nonce = nonce;
-                Hash = GetSHA256Hash(nonce);
+                Hash = GetHash(nonce);
             }
             return this;
+        }
+
+        private string GetHash(int nonce) {
+            var ret = "";
+            switch (this.Algo)
+            {
+                case Algorithm.sha256:
+                    ret = GetSHA256Hash(nonce);
+                    break;
+                case Algorithm.sha512:
+                    ret = GetSHA512Hash(nonce);
+                    break;
+            }
+            return ret;
         }
 
         //SHA256 HASH OF BLOCK
         public string GetSHA256Hash(int nonce)
         {
             StringBuilder Sb = new StringBuilder();
-            StringBuilder hashPrep = new StringBuilder();
-            hashPrep.Append(this.Id);
-            hashPrep.Append(this.TimeStamp);
-            hashPrep.Append(this.Data);
-            hashPrep.Append(this.PreviousHash);
-            hashPrep.Append(nonce);
+           
             using (SHA256 hash = SHA256Managed.Create())
             {
                 Encoding enc = Encoding.UTF8;
-                Byte[] result = hash.ComputeHash(enc.GetBytes(hashPrep.ToString()));
+                Byte[] result = hash.ComputeHash(enc.GetBytes(GetCombinedBlockDataAsString(nonce)));
 
                 foreach (Byte b in result)
                     Sb.Append(b.ToString("x2"));
             }
             return Sb.ToString();
         }
-        private static string GetSHA512Hash(string String)
+        private  string GetSHA512Hash(int nonce)
         {
-
+           
             UnicodeEncoding ue = new UnicodeEncoding();
             byte[] hashValue;
-            byte[] message = ue.GetBytes(String);
+            byte[] message = ue.GetBytes(GetCombinedBlockDataAsString(nonce));
 
             SHA512Managed hashString = new SHA512Managed();
             string hex = "";
@@ -288,6 +297,15 @@ namespace ConsoleApp4
             }
 
             return hex;
+        }
+        private string GetCombinedBlockDataAsString(int nonce) {
+            StringBuilder hashPrep = new StringBuilder();
+            hashPrep.Append(this.Id);
+            hashPrep.Append(this.TimeStamp);
+            hashPrep.Append(this.Data);
+            hashPrep.Append(this.PreviousHash);
+            hashPrep.Append(nonce);
+            return hashPrep.ToString();
         }
 
     }
