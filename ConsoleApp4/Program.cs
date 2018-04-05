@@ -11,8 +11,11 @@ namespace ConsoleApp4
     {
         static void Main(string[] args)
         {
+            var seedData = new string[]{ "asdfadsf", "asdfasdf3223", "av35vw35w3v5", "wa3bw35b235b235b", "ab23525b235b235", "wa35bw35bw35ba3w5b" };
+            var blockchain = new Blockchain(seedData,4, Algorithm.sha512);
+
             //create a blockchain with a difficulty of 4
-            var blockchain = new Blockchain(4,Algorithm.sha256);
+           // var blockchain = new Blockchain(4,Algorithm.sha256);
 
             //loop and ask user to insert blocks
             LoopAndAskForBlockData(ref blockchain);
@@ -99,7 +102,7 @@ namespace ConsoleApp4
         }
         public Blockchain(IEnumerable<string> data, int difficulty, Algorithm algo)
         {
-            this.algo = Algorithm.sha256;
+            this.algo = algo;
             this.Difficulty = difficulty;
             AddGenesisBlock();
             foreach (var d in data)
@@ -129,7 +132,7 @@ namespace ConsoleApp4
 
         //add first block upon blockchain object init
         private void AddGenesisBlock() {
-            var genesis = new Block(0, "GENESIS BLOCK", "0", Difficulty,this.algo);
+            var genesis = new Block(0, "GENESIS BLOCK", ("").PadLeft(64, '0'), Difficulty,this.algo);
             Console.WriteLine("Mining Gensis Block....");
             for (var i = 0; i < int.MaxValue; i++)
             {
