@@ -12,3 +12,9 @@ D:\github\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.csprojResolveAssemb
 D:\github\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.csproj.CoreCompileInputs.cache
 D:\github\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.exe
 D:\github\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.pdb
+C:\Users\joshua.kelly.IPEOPLE\Source\Repos\SimpleBlockchain\ConsoleApp4\bin\Debug\ConsoleApp4.exe.config
+C:\Users\joshua.kelly.IPEOPLE\Source\Repos\SimpleBlockchain\ConsoleApp4\bin\Debug\ConsoleApp4.exe
+C:\Users\joshua.kelly.IPEOPLE\Source\Repos\SimpleBlockchain\ConsoleApp4\bin\Debug\ConsoleApp4.pdb
+C:\Users\joshua.kelly.IPEOPLE\Source\Repos\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.csprojResolveAssemblyReference.cache
+C:\Users\joshua.kelly.IPEOPLE\Source\Repos\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.exe
+C:\Users\joshua.kelly.IPEOPLE\Source\Repos\SimpleBlockchain\ConsoleApp4\obj\Debug\ConsoleApp4.pdb
